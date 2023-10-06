@@ -1,55 +1,35 @@
 package de.neuefische;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 public class Main {
-    public static void main(String[] args) {
-        /*List<String> names = List.of("Anna", "Hans", "Peter", "Günther", "Lisa");
-        //long count = names.stream().filter(name -> name.length() > 4).count();
-        List<String> updatedNames = names.stream().filter(name -> name.length() > 4).map(name -> {
-                    return name += "1";
+    public static void main(String[] args) throws IOException {
+        List<Student> students = new ArrayList<>();
+        Files.lines(Path.of("students.csv"))
+                .skip(1)
+                .map(line -> line.split(","))
+                .map(split -> {
+                    if (split.length >= 4 && !split[0].isEmpty() && !split[2].isEmpty() && !split[3].isEmpty()) {
+                        return new Student(
+                                Integer.parseInt(split[0]),
+                                split[1],
+                                Integer.parseInt(split[2]),
+                                Integer.parseInt(split[3])
+                        );
+                    } else {
+                        return null;
+                    }
                 })
-                .toList();
-        for (String name : updatedNames) {
-            System.out.println(name);
-        }
-        *//*int count2 = 0;
-        for (String name : names) {
-            if (name.length() > 4) {
-                count2++;
-            }
-        }
-        System.out.println(count);*//*
+                .filter(Objects::nonNull)
+                .forEach(students::add);
 
-        List<String> emails = List.of("test@bla.de", "test2@test.de", "test3@test.de");
-        List<String> updatedEmails = emails.stream().map((email) -> {
-            if(email.contains("@bla.de")){
-                return email.replace("@bla.de", "@tesa.org");
-            } else {
-                return email.replace("@test.de", "@tesa.org");
-            }
-        }).toList();
-        for(String email : emails){
-            System.out.println(email);
-        }
-        for(String email : updatedEmails){
-            System.out.println(email);
-        }
-
-        List<Integer> numbers = List.of(1, 2, 3, 4, 5);
-        int sum = numbers.stream().parallel().reduce(0, (a, b) -> a + b);
-        System.out.println(sum);*/
-
-        List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "David");
-
-        List<String> upperCaseNames = names.stream()
-                .map(String::toUpperCase)
-                .collect(Collectors.toList());
-        for(String name : upperCaseNames){
-            System.out.println(name);
+        for (Student student : students) {
+            System.out.println(student);
         }
     }
 }
